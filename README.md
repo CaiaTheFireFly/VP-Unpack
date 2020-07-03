@@ -20,6 +20,9 @@ So far the only functionality is to extract (some) of these .pkg files into thei
   
 Usage:
  
+- Open solution.
+- Build (Delete the ModelExtract and ProcessInfo files if present).
+- Copy the VPPC_OFFSETS.xml from the solution folder to your program root (my bad, will automate this later).
 - Open program.
 - Set your paths in the Settings window.
 - Select a .pkg (only Viva Pinata (PC) at this time).
