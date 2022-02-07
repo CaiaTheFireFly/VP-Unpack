@@ -1,86 +1,86 @@
 ﻿using System;
 using System.IO;
 using System.IO.Compression;
-using System.Xml.Linq;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Data;
+using System.Windows.Forms;
+using System.Collections.Generic;
 
 namespace VP_Unpack
 {
+
     public class Pkg
     {
-        XDocument xml;
-        XElement pkgRoot;
-        XElement[] pkgStreams;
+        private string pkgPath;
+        public string pkgName;
+        public FileStream pkg;
 
-        FileStream openedPkg;
-        string pkgPath;
+        private BinaryReader pkgBR;
 
-        public void Init(string filePath)
+        private uint caffCount = 0;
+
+        private PkgHeader[] pkgHeaderInfo;
+        private CaffHeader[] caffHeaderInfo;
+
+        private Caff[] caffs;
+
+        public Pkg(string filePath)
         {
             pkgPath = filePath;
-            openedPkg = new FileStream(pkgPath, FileMode.Open);
+            pkgName = Path.GetFileName(filePath);
+            OutputConsole.SendMessage($"Opening: {pkgPath}");
+            pkg = new FileStream(pkgPath, FileMode.Open);
+            pkgBR = new BinaryReader(pkg);
 
-            FileStream xmlRaw = new FileStream(Path.Combine(Path.Combine(System.Reflection.Assembly.GetExecutingAssembly().Location,
-                ".."), "VPPC_OFFSETS.xml"), FileMode.Open);
-            xml = XDocument.Load(xmlRaw);
-            xmlRaw.Dispose();
-            pkgRoot = xml.Descendants().Where(x => (string)x.Attribute("Checksum") == GetMD5()).FirstOrDefault();
-            pkgStreams = pkgRoot.Descendants("Stream").ToArray();
+            //Check file MD5.
+            Globals.mainForm.SetFilePathLabelText(pkgPath);
 
-            openedPkg.Close();
-            ProcessPkg();
+            pkg.Seek(4, SeekOrigin.Begin);
+            caffCount = pkgBR.ReadUInt32();
+
+            pkgHeaderInfo = Headers.GeneratePkgHeaders(pkgBR, caffCount);
+            UpdateTreeView();
+
+            caffHeaderInfo = Headers.GenerateCaffHeaders(pkgBR, pkgHeaderInfo, caffCount);
+
+            caffs = new Caff[caffCount];
+
+            for (int i = 0; i < caffCount; i++)
+            {
+                caffs[i] = new Caff(pkgBR, caffHeaderInfo[i], pkgHeaderInfo[i].caffOffset, i);
+            }
+            UpdateMainPanel(0);
         }
 
-        void ProcessPkg()
+        public void GetCaffHeaderInfo(int index, TreeNode node)
         {
-            string[] extension = { ".vref", ".vunk", ".vnfo", ".vdat" };
+            UpdateMainPanel(index);
+        }
 
-            string pkgFolder = Path.Combine(UserPaths.vpPCDirO, pkgRoot.Attribute("Name").Value);
-            Directory.CreateDirectory(pkgFolder);
-            string caffFolder = "You hecked up";
-
-            int caffIndex = 0;
-            int extensionIndex = 0;
-            for (int i = 0; i < pkgStreams.Length; i++)
+        private void UpdateTreeView()
+        {
+            int i = 0;
+            foreach (PkgHeader hnfo in pkgHeaderInfo)
             {
-
-                Directory.CreateDirectory(Path.Combine(pkgFolder, pkgRoot.Attribute("Name").Value + " Caff " + caffIndex));
-                caffFolder = Path.Combine(pkgFolder, pkgRoot.Attribute("Name").Value + " Caff " + caffIndex);
-
-                openedPkg = new FileStream(pkgPath, FileMode.Open);
-                openedPkg.Seek(Convert.ToInt32(pkgStreams[i].Attribute("Offset").Value, 16) + 2, SeekOrigin.Begin);
-
-                using (DeflateStream deflateStream = new DeflateStream(openedPkg, CompressionMode.Decompress))
-                {
-                    using (FileStream output = new FileStream(Path.Combine(caffFolder, pkgRoot.Attribute("Name").Value + " Caff " + caffIndex + extension[extensionIndex]),
-                        FileMode.Create))
-                    {
-                        deflateStream.CopyTo(output);
-                    }
-                }
-                extensionIndex++;
-                if (extensionIndex == 4)
-                {
-                    extensionIndex = 0;
-                }
-
-                if (i != 0 & (i + 1) % 4 == 0)
-                {
-                    caffIndex++;
-                }
+                Globals.mainForm.GetTreeView().Nodes.Add($"Caff {i}");
+                i++;
             }
         }
 
-        string GetMD5()
+        private void UpdateMainPanel(int index)
         {
-            using (var md5 = MD5.Create())
+            if (!Globals.mainForm.GetMainPanel().Controls.Contains(Globals.caffHeaderControl))
             {
-                string m = BitConverter.ToString(md5.ComputeHash(openedPkg)).Replace("-", string.Empty);
-                openedPkg.Seek(0, SeekOrigin.Begin);
-                return m;
+                Globals.mainForm.GetMainPanel().Controls.Add(Globals.caffHeaderControl);
             }
+            else
+            {
+                if (!Globals.caffHeaderControl.Enabled)
+                {
+                    Globals.caffHeaderControl.Enabled = true;
+                }
+            }
+            Globals.caffHeaderControl.UpdateInfo(pkgHeaderInfo[index], caffHeaderInfo[index], index);
         }
     }
 }
