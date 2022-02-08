@@ -27,7 +27,9 @@ Usage:
 - Select a .PKG (only Viva Pinata (PC) at this time). (Use the .PKG option under File, ignore Tools for the time being).
 - View the names, offsets, and sizes of chunks within the .VDAT files for each .CAFF.
 - Happy exploring.
-  
+
+![2022-02-08 09_24_12-](https://user-images.githubusercontent.com/55065970/152957151-e0e0e96a-0152-4577-8c68-b17f9885dcea.png)
+
 Issues:
  
 - Model extraction is manually easy, simply count the length of each vertex data section (this can vary depending on what additional info is present, find the coordinates,
