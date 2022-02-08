@@ -21,10 +21,11 @@ namespace VP_Unpack
         //View options.
         public static bool clearLogCheck = false;
 
+        ////To be removed.
         public static MemoryStream vpltMem;
         public static BinaryReader vpltBR;
-
         public static BinaryWriter vpltBW;
+        ////
 
         public static int GetMD5Record(byte[] input)
         {
@@ -41,7 +42,7 @@ namespace VP_Unpack
             }
 
             return -1;
-        }
+        }//Unused for the moment.
 
         public static byte[] GenerateMD5(FileStream fileStream)
         {
@@ -50,8 +51,14 @@ namespace VP_Unpack
                 byte[] result = md5.ComputeHash(fileStream);
                 return result;
             }
-        }
+        }//Unused for the moment.
 
+        /// <summary>
+        /// Copies a Stream for a set length.
+        /// </summary>
+        /// <param name="input">The Stream to be copied.</param>
+        /// <param name="output">The output Stream.</param>
+        /// <param name="bytes">Length of bytes to be copied.</param>
         public static void CopyStream(Stream input, Stream output, int bytes)
         {
             byte[] buffer = new byte[64*1024];
@@ -64,6 +71,11 @@ namespace VP_Unpack
             output.Seek(0, SeekOrigin.Begin);
         }
 
+        /// <summary>
+        /// Reads a string from a Stream from the current position, until a null byte is found.
+        /// </summary>
+        /// <param name="br">The input BinaryReader (Make sure to start from the beginning position of the string.</param>
+        /// <returns>The output string.</returns>
         public static string ReadNullTerminatedString(BinaryReader br)
         {
             string str = "";
@@ -75,15 +87,24 @@ namespace VP_Unpack
             return str;
         }
 
+        /// <summary>
+        /// Strips the date and other unneeded info from a chunk name.
+        /// </summary>
+        /// <param name="str">The string to be stripped.</param>
+        /// <returns>The output string.</returns>
         public static string StripChunkName(string str)
         {
-            Regex rx0 = new Regex(@",.*?(?=\()");
+            Regex rx0 = new Regex(@",.*?(?=\()"); //Regex voodoo (Will expand on this when I remember how it works).
             Regex rx1 = new Regex(@",.*?$");
             if (rx0.IsMatch(str)) { return rx0.Replace(str, ""); }
             else { return rx1.Replace(str, ""); }
         }
 
-        public static string MakeFileNameHash()
+        /// <summary>
+        /// Hashes a chunk name using a PJW hashing function.
+        /// </summary>
+        /// <returns>The hashed name (in hex)</returns>
+        public static string MakeFileNameHash() //Unused for the moment. Need clarification that this is actually used by the EXE in any way.
         {
             string str = "doctorclinicopen";
             byte[] b = Encoding.ASCII.GetBytes(str); //To byte array, length 24.

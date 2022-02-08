@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace VP_Unpack
 {
-    class Model_Extract
+    class Model_Extract //Unused. Will implement when the structures in .VDAT are better understood.
     {
         int vOffset = 84288; //0
         int vLength = 369; //635

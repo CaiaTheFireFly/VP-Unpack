@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace VP_Unpack
 {
-    class ProcessInfo
+    class ProcessInfo //Unused.
     {
         BinaryReader vindxBR;
         BinaryReader vdatBR;

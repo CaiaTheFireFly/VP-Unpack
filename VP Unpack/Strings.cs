@@ -13,7 +13,12 @@ namespace VP_Unpack
         private static string ex_vdat = ".vdat";
         private static string ex_vgpu = ".vgpu";
 
-        public static string GetCaffExtension(int i)
+        /// <summary>
+        /// Returns .CAFF embedded file extensions.
+        /// </summary>
+        /// <param name="i">Extension index. (0 = ".vref", 1 = ".vlut", 2 = ".vdat", 3 = ".vgpu".</param>
+        /// <returns></returns>
+        public static string GetCaffExtension(int i) //TODO: Cleanup and conversion later.
         {
             switch (i)
             {

@@ -12,14 +12,15 @@ namespace VP_Unpack
         {
             InitializeComponent();
 
+            //////Set Global form variables.
             VP_Unpack.Globals.mainForm = this;
             Globals.caffHeaderControl = new CaffHeaderControl();
+            //////
 
             ResetForm();
             OutputConsole.SendMessage("Welcome to VP Unpack!");
 
             UserPrefs.Init();
-            //OutputConsole.SendMessage(Globals.MakeFileNameHash()); //Testing.
         }
 
         private void OpenSettingsForm(object sender, EventArgs e)
@@ -39,7 +40,7 @@ namespace VP_Unpack
 
                 foreach (string pkgPath in dialogUnpackPkg.FileNames)
                 {
-                    if (Globals.currentPkg != null) { Globals.currentPkg.pkg.Dispose(); }
+                    if (Globals.currentPkg != null) { Globals.currentPkg.pkg.Dispose(); } //Makes sure that any previous Stream is closed.
                     Globals.currentPkg = new Pkg(pkgPath);
                 }
             }
@@ -50,6 +51,9 @@ namespace VP_Unpack
             Application.Exit();
         }
 
+        /// <summary>
+        /// Resets the Form and Output Log (If the user has opted to clear log on new file opened).
+        /// </summary>
         private void ResetForm()
         {
             Globals.mainForm.Text = "Viva Pinata Unpack";
@@ -82,7 +86,7 @@ namespace VP_Unpack
             }
 
             Globals.vpltMem.Dispose();
-        }
+        } //To be removed.
 
         private void dumpOffsetsToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -113,24 +117,36 @@ namespace VP_Unpack
             //    Globals.vpltMem.Dispose();
             //    Globals.vpltBW.Dispose();
             //    output.Dispose();
-        }
+        } //To be removed.
 
         private void ClearLogCheck(object sender, EventArgs e)
         {
             (sender as ToolStripMenuItem).Checked = !(sender as ToolStripMenuItem).Checked;
             Globals.clearLogCheck = (sender as ToolStripMenuItem).Checked;
-        }
+        } //Option to clear the output log between new file operations.
 
+        /// <summary>
+        /// Retrieves the main TreeView.
+        /// </summary>
+        /// <returns></returns>
         public TreeView GetTreeView()
         {
             return treeView;
         }
 
+        /// <summary>
+        /// Retrieves the main Panel.
+        /// </summary>
+        /// <returns></returns>
         public Panel GetMainPanel()
         {
             return mainSC.Panel2;
         }
 
+        /// <summary>
+        /// Sets the current filepath to a label.
+        /// </summary>
+        /// <param name="s">Input filepath.</param>
         public void SetFilePathLabelText(string s)
         {
             filePathLabel.Text = s;
@@ -138,9 +154,9 @@ namespace VP_Unpack
 
         private void TreeViewSelection(object sender, TreeNodeMouseClickEventArgs e)
         {
-            if (e.Node.Level == 0)
+            if (e.Node.Level == 0) //Make sure the Node selected is at the root level.
             {
-                Globals.currentPkg.GetCaffHeaderInfo(e.Node.Index, e.Node);
+                Globals.currentPkg.GetCaffHeaderInfo(e.Node.Index, e.Node); //Update the main Panel with the relevant selected Node index.
             }
         }
     }

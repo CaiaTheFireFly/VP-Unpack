@@ -56,6 +56,9 @@ namespace VP_Unpack
         }
     }
 
+    /// <summary>
+    /// Found at the start of a .PKG file. Each entry contains data pertaining to the enclosed .CAFF files. 
+    /// </summary>
     public class PkgHeader
     {
         public uint unk0; //Checksum?
@@ -63,6 +66,9 @@ namespace VP_Unpack
         public uint caffSize;
     }
 
+    /// <summary>
+    /// Contains data for the first two Streams (required, .VREF &amp; .VLUT).
+    /// </summary>
     public class CaffHeader
     {
         public byte[] magic;
@@ -78,18 +84,23 @@ namespace VP_Unpack
         public uint stream1UncSize;
         public byte[] unk3; //12;
         public uint stream1CSize;
-        //
+
+        ////Fields not contained in the header, but can be filled post-VREF extraction.
         public uint stream2UncSize;
         public uint stream2CSize;
         public uint stream3UncSize;
         public uint stream3CSize;
+        ////
     }
 
+    /// <summary>
+    /// Found at the start of a .VREF. If applicable contains the data for additional Streams found in the .CAFF (.VDAT &amp; .VGPU).
+    /// </summary>
     public struct RefHeader
     {
         public byte[] unk0;
         public byte[] unk1; //File identification?
-                            //Pad 1 byte.
+        //Pad 1 byte.
         public uint streamUncSize;
         //Pad 16 bytes.
         public uint streamCSize;
@@ -97,6 +108,9 @@ namespace VP_Unpack
 
     }
 
+    /// <summary>
+    /// Messy hack to determine what type an additional Stream is. Will expand once more is known.
+    /// </summary>
     public static class StreamType
     {
         public static readonly byte[] data = { 02, 00, 00, 00 };

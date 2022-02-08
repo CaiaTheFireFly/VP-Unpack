@@ -24,9 +24,12 @@ namespace VP_Unpack
         static BinaryReader userPrefsBR;
         static BinaryWriter userPrefsBW;
 
+        /// <summary>
+        /// Initialize the User Preferences, creating a new userPrefs.bin if none exist.
+        /// </summary>
         static public void Init()
         {
-            appPath = Path.Combine(System.Reflection.Assembly.GetExecutingAssembly().Location, "..");
+            appPath = Path.Combine(System.Reflection.Assembly.GetExecutingAssembly().Location, ".."); //Get the current application path.
             userPrefs = new FileStream(Path.Combine(appPath, "userPrefs.bin"),
             FileMode.OpenOrCreate, FileAccess.ReadWrite);
 
@@ -35,6 +38,9 @@ namespace VP_Unpack
             ReadAll();
         }
 
+        /// <summary>
+        /// Reads the paths from userPrefs.bin.
+        /// </summary>
         static public void ReadAll()
         {
             try
@@ -54,11 +60,14 @@ namespace VP_Unpack
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Please set your game paths in Settings.\nException: " + ex.Message);
+                MessageBox.Show("Please set your game paths in Settings. (Ignore this for the moment).\nException: " + ex.Message); //Warning that userPrefs.bin is corrupted or needs to be filled.
                 Write();
             }
         }
 
+        /// <summary>
+        /// Write paths to userPrefs.bin.
+        /// </summary>
         static public void Write()
         {
             userPrefsBW.BaseStream.Seek(0, SeekOrigin.Begin);
@@ -80,7 +89,7 @@ namespace VP_Unpack
 
         static string Denc(short i)
         {
-            return ASCIIEncoding.ASCII.GetString(userPrefsBR.ReadBytes(i));
+            return Encoding.ASCII.GetString(userPrefsBR.ReadBytes(i));
         }
     }
 }

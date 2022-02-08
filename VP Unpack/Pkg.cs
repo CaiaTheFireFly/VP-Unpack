@@ -32,7 +32,9 @@ namespace VP_Unpack
             pkg = new FileStream(pkgPath, FileMode.Open);
             pkgBR = new BinaryReader(pkg);
 
-            //Check file MD5.
+            ////Check file MD5.
+            ////
+
             Globals.mainForm.SetFilePathLabelText(pkgPath);
 
             pkg.Seek(4, SeekOrigin.Begin);
