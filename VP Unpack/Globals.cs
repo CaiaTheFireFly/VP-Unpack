@@ -124,5 +124,31 @@ namespace VP_Unpack
 
             return output.ToString("X8"); //1264...
         }
+
+        /// <summary>
+        /// Sorts Chunk names into the TreeView via a directory format.
+        /// </summary>
+        /// <param name="names">Chunk names to be sorted.</param>
+        /// <param name="index">Index of CAFF file.</param>
+        public static void SortTreeView(string[] names, int index) //Duplicate Chunk names are currently not considered.
+        {
+            foreach (string s in names)
+            {
+                string[] nameSplit = s.Split('_');
+                TreeNode parentNode = mainForm.GetTreeView().Nodes[index];
+
+                for (int i = 0; i < nameSplit.Length; i++)
+                {
+                    if (parentNode.Nodes.ContainsKey(nameSplit[i]))
+                    {
+                        parentNode = parentNode.Nodes[parentNode.Nodes.IndexOfKey(nameSplit[i])];
+                    }
+                    else
+                    {
+                        parentNode = parentNode.Nodes.Add(nameSplit[i], nameSplit[i]);
+                    }
+                }
+            }
+        }
     }
 }

@@ -31,11 +31,6 @@ namespace VP_Unpack
             DataChunkCount.Text = $".DATA chunk count: {caffHeader.chunkCount}";
             GpuChunkCount.Text = $".GPU chunk count: {caffHeader.chunkSpreadCount - caffHeader.chunkCount}";
 
-            //for (int i = 0; i < 4; i++)
-            //{
-            //    streamOffsets[i].Text = $"{i} offset(h): {caffHeader.stream0Offset}";
-            //    streamSizes[i].Text = $"0 size(bytes) - Compressed: {caffHeader.stream0CSize} -> Uncompressed: {caffHeader.stream0UncSize}";
-            //}
             Stream0Offset.Text = $"0 offset(h): {caffHeader.stream0Offset}";
             Stream0Size.Text = $"0 size(bytes) - Compressed: {caffHeader.stream0CSize} -> Uncompressed: {caffHeader.stream0UncSize}";
 

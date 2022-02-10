@@ -158,6 +158,42 @@ namespace VP_Unpack
             {
                 Globals.currentPkg.GetCaffHeaderInfo(e.Node.Index, e.Node); //Update the main Panel with the relevant selected Node index.
             }
+            if (e.Node.Level == 1 & e.Button == MouseButtons.Right)
+            {
+                ContextMenuStrip cms = new ContextMenuStrip();
+                cms.Items.Add("Export to...");
+                cms.Items.Add("Quick export");
+
+                (sender as TreeView).SelectedNode = e.Node;
+                cms.Show(MousePosition);
+
+                cms.ItemClicked += new ToolStripItemClickedEventHandler(Chunk_RightClick);
+            }
+        }
+
+        private void Chunk_RightClick(object sender, ToolStripItemClickedEventArgs e)
+        {
+            switch ((sender as ContextMenuStrip).Items.IndexOf(e.ClickedItem))
+            {
+                case 0:
+                    ExportChunkTo();
+                    break;
+                case 1:
+                    ExportChunkQuick();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void ExportChunkTo()
+        {
+            OutputConsole.SendMessage($"");
+        }
+
+        private void ExportChunkQuick()
+        {
+            OutputConsole.SendMessage("Exporting quick");
         }
     }
 }
